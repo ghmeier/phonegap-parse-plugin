@@ -24,6 +24,7 @@ public class ParsePlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+Log.e("gifasent","woah dog "+action);
         if (action.equals(ACTION_INITIALIZE)) {
             this.initialize(callbackContext, args);
             return true;

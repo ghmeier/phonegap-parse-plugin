@@ -48,18 +48,29 @@
 - (void)subscribe: (CDVInvokedUrlCommand *)command
 {
     // Not sure if this is necessary
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-        UIRemoteNotificationTypeBadge |
-        UIRemoteNotificationTypeAlert |
-        UIRemoteNotificationTypeSound];
-
-    CDVPluginResult* pluginResult = nil;
+    /*if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+     UIUserNotificationSettings *settings =
+     [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert |
+     UIUserNotificationTypeBadge |
+     UIUserNotificationTypeSound
+     categories:nil];
+     [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+     [[UIApplication sharedApplication] registerForRemoteNotifications];
+     }
+     else {
+     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     UIRemoteNotificationTypeBadge |
+     UIRemoteNotificationTypeAlert |
+     UIRemoteNotificationTypeSound];
+     }
+     */
+    //CDVPluginResult* pluginResult = nil;
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     NSString *channel = [command.arguments objectAtIndex:0];
     [currentInstallation addUniqueObject:channel forKey:@"channels"];
     [currentInstallation saveInBackground];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    //[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)unsubscribe: (CDVInvokedUrlCommand *)command
@@ -71,6 +82,19 @@
     [currentInstallation saveInBackground];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)pushOnChannel: (CDVInvokedUrlCommand *)notification
+{
+    NSArray *commandArray = [notification.arguments objectAtIndex: 0];
+    NSString *channelString = [commandArray objectAtIndex: 0];
+    NSString *messageString = [commandArray objectAtIndex: 1];
+    // Send a notification to all devices subscribed to the "Giants" channel.
+    PFPush *push = [[PFPush alloc] init];
+    [push setChannel:channelString];
+    [push setMessage:messageString];
+    [push sendPushInBackground];
+    
 }
 
 @end

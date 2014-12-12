@@ -9,8 +9,10 @@
 - (void)getSubscriptions: (CDVInvokedUrlCommand *)command;
 - (void)subscribe: (CDVInvokedUrlCommand *)command;
 - (void)unsubscribe: (CDVInvokedUrlCommand *)command;
+- (void)pushOnChannel: (CDVInvokedUrlCommand *)notification;
 
 @end
 
 @interface AppDelegate (CDVParsePlugin)
 @end
+

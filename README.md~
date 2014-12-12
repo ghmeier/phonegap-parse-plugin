@@ -1,9 +1,7 @@
 Phonegap Parse.com Plugin
 =========================
 
-Phonegap 3.0.0 plugin for Parse.com push service
-
-**Updated to use parse 1.7.1 which uses new method for completing actions in the background.**
+Phonegap 1.7.1 plugin for Parse.com push service
 
 Using [Parse.com's](http://parse.com) REST API for push requires the installation id, which isn't available in JS
 

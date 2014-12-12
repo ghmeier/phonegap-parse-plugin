@@ -40,6 +40,7 @@ var parsePlugin = {
     },
 
     pushOnChannel: function(channel, message, successCallback, errorCallback) {
+console.log('pushing' + channel + " "+message);
         cordova.exec(
             successCallback,
             errorCallback,
