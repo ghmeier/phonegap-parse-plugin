@@ -84,14 +84,28 @@ public class ParsePlugin extends CordovaPlugin {
     private void pushOnChannel(final CallbackContext callbackContext,final JSONArray args){
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-	String channel = args.getString(0);
-	String message = args.getString(1);
+                String channel = "";
+                String message = "";
+
                 ParsePush push = new ParsePush();
-		push.setChannel(channel);
+
+                try{
+                    channel = args.getString(0);
+                }catch(JSONException e){
+
+                }
+
+                try{
+                    message = args.getString(1);
+                }catch(JSONException e){
+
+                }
+
+                push.setChannel(channel);
                 push.setMessage(message);
-		push.sendInBackground();
-		
-	        callbackContext.success();
+                push.sendInBackground();
+
+                callbackContext.success();
             }
         });	
     }
