@@ -10,6 +10,7 @@
 - (void)subscribe: (CDVInvokedUrlCommand *)command;
 - (void)unsubscribe: (CDVInvokedUrlCommand *)command;
 - (void)pushOnChannel: (CDVInvokedUrlCommand *)notification;
+- (void)logAnalytics: (CDVInvokedUrlCommand *)command;
 
 @end
 

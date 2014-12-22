@@ -86,17 +86,53 @@
 
 - (void)pushOnChannel: (CDVInvokedUrlCommand *)notification
 {
-    NSArray *commandArray = [notification.arguments objectAtIndex: 0];
-    NSString *channelString = [commandArray objectAtIndex: 0];
-    NSString *messageString = [commandArray objectAtIndex: 1];
-    // Send a notification to all devices subscribed to the "Giants" channel.
-    PFPush *push = [[PFPush alloc] init];
-    [push setChannel:channelString];
-    [push setMessage:messageString];
-    [push sendPushInBackground];
-    
+    [self.commandDelegate runInBackground:^{
+        NSArray *commandArray = [notification.arguments objectAtIndex: 0];
+        NSString *channelString = [commandArray objectAtIndex: 0];
+        NSString *messageString = [commandArray objectAtIndex: 1];
+        
+        //Use this is you would like the receiver's badge to increment (iOS receiver only)
+        //Make sure your AppDelegate is setup to handle badges for iOS devices if you implement this
+        /*NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+         messageString, @"alert",
+         @"Increment", @"badge",
+         nil];*/
+        
+        // Create our Installation query
+        PFQuery *pushQuery = [PFInstallation query];
+        PFInstallation *instal = [PFInstallation currentInstallation];
+        [pushQuery whereKey:@"installationId" notEqualTo:instal.installationId];
+        [pushQuery whereKey:@"channels" equalTo:channelString];
+        
+        // Send a notification to all devices subscribed to the "Giants" channel.
+        PFPush *push = [[PFPush alloc] init];
+        [push setQuery:pushQuery];
+        [push setChannel:channelString];
+        
+        //If you are implementing the badge increment part, set the dictionary below and you can take out  [setMessage] since that is implemented inside the dictionary
+        
+        /*[push setData:data];*/
+        
+        [push setMessage:messageString];
+        [push sendPushInBackground];
+    }];
 }
-
+- (void)logAnalytics: (CDVInvokedUrlCommand *)command
+{
+    //NSLog(@"lsdjhfoisdhgpksdnvosh");
+    [self.commandDelegate runInBackground:^{
+        NSArray *commandArray = [command.arguments objectAtIndex:0];
+        NSString *event = [commandArray objectAtIndex:0];
+        NSString *info = [commandArray objectAtIndex:1];
+        //NSLog(@"--------------%@------------------",event);
+        //NSLog(@"--------------%@------------------",info);
+        NSDictionary *dimenstions = @{
+                                      event: info,
+                                      };
+        
+        [PFAnalytics trackEvent:@"action" dimensions:dimenstions];
+    }];
+}
 @end
 
 @implementation AppDelegate (CDVParsePlugin)
