@@ -84,6 +84,9 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+/*
+ Parameters: notification - an array [channel, message] 
+*/
 - (void)pushOnChannel: (CDVInvokedUrlCommand *)notification
 {
     [self.commandDelegate runInBackground:^{
@@ -119,16 +122,14 @@
 }
 - (void)logAnalytics: (CDVInvokedUrlCommand *)command
 {
-    //NSLog(@"lsdjhfoisdhgpksdnvosh");
     [self.commandDelegate runInBackground:^{
         NSArray *commandArray = [command.arguments objectAtIndex:0];
         NSString *event = [commandArray objectAtIndex:0];
         NSString *info = [commandArray objectAtIndex:1];
-        //NSLog(@"--------------%@------------------",event);
-        //NSLog(@"--------------%@------------------",info);
+        
         NSDictionary *dimenstions = @{
-                                      event: info,
-                                      };
+                event: info,
+        };
         
         [PFAnalytics trackEvent:@"action" dimensions:dimenstions];
     }];
